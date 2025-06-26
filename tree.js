@@ -46,7 +46,7 @@ export default class Tree {
             if (value === currentNode.data) {
                 return;
             }
-            
+
             if (value < currentNode.data) {
                 if (currentNode.left === null) {
                     currentNode.left = new Node(value);
@@ -83,6 +83,103 @@ export default class Tree {
        
             
     // }
+
+    deleteItem(value) {
+        // if tree is empty
+        if (this.root === null) return null;
+
+        let currentNode = this.root;
+        let previousNode = null;
+
+        // move through the tree to find the targeted node
+        while (currentNode !== null && currentNode.data !== value) {
+            previousNode = currentNode;
+
+            if (currentNode.data === value) {
+                return;
+            }
+
+            if (value < currentNode.data) {
+                currentNode = currentNode.left;
+            }
+            
+            if (value > currentNode.data) {
+                currentNode = currentNode.right;
+            }
+
+            
+        }
+
+        if (currentNode.data === value) {
+            // case one: no subtree
+            if (currentNode.left === null && currentNode.right === null) {
+                if (previousNode === null) {
+                    this.root = null;
+                } else if (value < previousNode.data) {
+                    previousNode.left = null;
+                } else {
+                    previousNode.right = null;
+                }
+            }
+
+            // case two: one subtree
+            else if (currentNode.left === null || currentNode.right === null) {
+                // find which child exist
+                const child = currentNode.left !== null ? currentNode.left : currentNode.right;
+
+                if (previousNode === null) {
+                    this.root = child;
+                }
+                else if (value < previousNode.data) {
+                    previousNode.left = child;
+                } else {
+                    previousNode.right = child;
+                }
+            }
+
+            // case three: two subtree
+            else {
+                // successor method:
+                let successorParent = currentNode;
+                let successor = currentNode.right;
+
+                // find smallest value of right subtree
+                while (successor.left !== null) {
+                    successorParent = successor;
+                    successor = successor.left;
+                }
+
+                // copy the last or smallest node to the current node (the one we want to delete)
+                currentNode.data = successor.data;
+
+                // delete the successor
+                //case one: if currentNode has no left subtree
+                if (successorParent === currentNode) {
+                    successorParent.right = successor.right;
+                } else {
+                    successorParent.left = successor.right
+                }
+            }
+        }
+
+    }
+
+    find(value) {
+
+        let currentNode = this.root;
+        // if value < currentNode go to left branch else go to opposite side currentNode = currentNode left/right
+        while(currentNode !== null) {
+            if (value < currentNode.data) {
+                currentNode = currentNode.left;
+            } else if (value > currentNode.data) {
+                currentNode = currentNode.right;
+            } else {
+                return currentNode;
+            }
+        }
+
+        return null;
+    }
 
 }
 
