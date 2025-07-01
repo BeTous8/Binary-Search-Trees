@@ -181,6 +181,111 @@ export default class Tree {
         return null;
     }
 
+    levelOrder(callback) {
+        // validate callback
+        if(!callback) {
+            throw new Error("callback function is required");
+        }
+
+        // handle empty tree
+        if (this.root === null) return;
+
+        // use array as queue by using shift and push
+        const queue = [this.root];
+        // let currentNode = this.root;
+
+        while (queue.length > 0) {
+            const currentNode = queue.shift();
+            //call the callback function
+            callback(currentNode);
+
+            if (currentNode.left !== null) {
+                queue.push(currentNode.left);
+            }
+            if (currentNode.right !== null) {
+                queue.push(currentNode.right)
+            }
+            
+        }
+
+    }
+
+    inOrder(callback) {
+        if (!callback) {
+            throw new Error("Callback function is required");
+        }
+        
+
+        function inOrderRecursive(currentNode, callback) {
+            if (currentNode === null) return;
+
+            inOrderRecursive(currentNode.left, callback);
+            callback(currentNode);
+            inOrderRecursive(currentNode.right, callback)
+        }
+
+        inOrderRecursive(this.root, callback);
+        
+    }
+
+
+    preOrder(callback) {
+        if (!callback) {
+            throw new Error("Callback function is required");
+        }
+        
+
+        function preOrderRecursive(currentNode, callback) {
+            if (currentNode === null) return;
+
+            callback(currentNode);
+            preOrderRecursive(currentNode.left, callback);
+            preOrderRecursive(currentNode.right, callback)
+        }
+
+        preOrderRecursive(this.root, callback);
+        
+    }
+
+    postOrder(callback) {
+        if (!callback) {
+            throw new Error("Callback function is required");
+        }
+        
+
+        function postOrderRecursive(currentNode, callback) {
+            if (currentNode === null) return;
+
+            postOrderRecursive(currentNode.left, callback);
+            postOrderRecursive(currentNode.right, callback);
+            callback(currentNode);
+        }
+
+        postOrderRecursive(this.root, callback);
+        
+    }
+
+    height(value) {
+
+        const targetNode = this.find(value);  // ✅ Reuse existing search logic
+    
+        if (targetNode === null) {
+            return null;  // Value not found
+        }
+        
+
+        function heightRecursion(node) {
+            if (node === null) return -1;
+
+            const leftHeight = heightRecursion(node.left);
+            const rightHeight = heightRecursion(node.right);
+            return 1 + Math.max(leftHeight, rightHeight)
+        }
+
+        return heightRecursion(targetNode)
+
+        
+    }
 }
 
 
