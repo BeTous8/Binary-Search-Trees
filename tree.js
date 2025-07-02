@@ -274,20 +274,88 @@ export default class Tree {
         }
         
 
-        function heightRecursion(node) {
-            if (node === null) return -1;
-
-            const leftHeight = heightRecursion(node.left);
-            const rightHeight = heightRecursion(node.right);
-            return 1 + Math.max(leftHeight, rightHeight)
-        }
-
-        return heightRecursion(targetNode)
+        return this.calculateHeight(targetNode);
 
         
     }
-}
 
+    depth(value) {
+        let depthValue = 0;
+        if (this.root === null) return null;
+
+        let currentNode = this.root;
+        while(currentNode !== null) {
+            if (value < currentNode.data) {
+                currentNode = currentNode.left;
+                depthValue += 1;
+            } else if (value > currentNode.data) {
+                currentNode = currentNode.right;
+                depthValue += 1;
+            } else {
+                return depthValue;
+            }
+        }
+        return null;
+    }
+
+    isBalanced() {
+        const self = this;
+        
+        const checkBalance = (node) => {
+            if (node === null) return true;
+
+            const leftHeight = this.calculateHeight(node.left);
+            const rightHeight = this.calculateHeight(node.right);
+
+            if (Math.abs(leftHeight - rightHeight) > 1) return false;
+
+            return checkBalance(node.left) && checkBalance(node.right)
+
+        }
+
+        return checkBalance(this.root);
+        
+    }
+
+    calculateHeight(node) {
+        if (node === null) return -1;
+
+        const leftHeight = this.calculateHeight(node.left);
+        const rightHeight = this.calculateHeight(node.right);
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    rebalance() {
+        // create new empty array
+        const newArr = [];
+
+        const inOrderRebuiltRecursive = (node) => {
+            if (node === null) return;
+
+            inOrderRebuiltRecursive(node.left);
+            newArr.push(node.data);
+            inOrderRebuiltRecursive(node.right);
+        }
+        if (!this.isBalanced()) {
+            // inOrder traversal
+            inOrderRebuiltRecursive(this.root);
+            // call buildtree to rebuild the tree
+            this.root = this.buildTreeRecursion(newArr)
+        }
+
+        return newArr;
+    }
+
+    createRandomArray(length) {
+        const randomArray = [];
+        for (let i=0; i < length; i++) {
+            const randomNumber = Math.floor(Math.random() * 100);
+            randomArray.push(randomNumber);
+        }
+
+        return randomArray;
+    }
+}
 
 
 
